@@ -17,7 +17,7 @@ class SongTable(tag: Tag)
   def name: Rep[String] = column[String]("name", NotNull)
   def artist: Rep[String] = column[String]("artist", NotNull)
   def album: Rep[String] = column[String]("album", NotNull)
-  def albumCoverUrl: Rep[String] = column[String]("album_cover_url", NotNull)
+  def albumCoverUrl: Rep[String] = column[String]("album_cover_url")
 
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 

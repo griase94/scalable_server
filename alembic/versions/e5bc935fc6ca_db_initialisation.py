@@ -32,7 +32,7 @@ def upgrade():
                     Column('album_cover_url', VARCHAR, nullable=True),
                     Column('created_at', TIMESTAMP, nullable=False),
                     schema='scalable')
-    op.create_table('party_song',
+    op.create_table('party_queue',
                         Column('id', BIGINT, primary_key=True),
                         Column('party_id', BIGINT, nullable=False),
                         Column('song_id', BIGINT, nullable=False),
@@ -40,18 +40,18 @@ def upgrade():
                         Column('downvotes', INTEGER, nullable=True, default=0),
                         schema='scalable')
 
-    op.create_foreign_key('party_song_party_id_fk', 'party_song', 'party',
+    op.create_foreign_key('party_queue_party_id_fk', 'party_queue', 'party',
                           ['party_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
-    op.create_foreign_key('party_song_song_id_fk', 'party_song', 'song',
+    op.create_foreign_key('party_queue_song_id_fk', 'party_queue', 'song',
                           ['song_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
-    op.create_index('party_song_unique_constraint', 'party_song',
+    op.create_index('party_queue_unique_constraint', 'party_queue',
                     ['party_id', 'song_id'], schema='scalable', unique=True)
 
 
 def downgrade():
-    op.drop_index('party_song_unique_constraint', 'party_song', schema='scalable')
-    op.drop_constraint('party_song_song_id_fk', 'party_song', None, schema='scalable')
-    op.drop_constraint('party_song_party_id_fk', 'party_song', None, schema='scalable')
-    op.drop_table('party_song', schema='scalable')
+    op.drop_index('party_queue_unique_constraint', 'party_queue', schema='scalable')
+    op.drop_constraint('party_queue_song_id_fk', 'party_queue', None, schema='scalable')
+    op.drop_constraint('party_queue_party_id_fk', 'party_queue', None, schema='scalable')
+    op.drop_table('party_queue', schema='scalable')
     op.drop_table('party', schema='scalable')
     op.drop_table('song', schema='scalable')

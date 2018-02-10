@@ -31,12 +31,12 @@ object ScalablePostgresProfile extends ScalablePostgresProfile
   * Trait to get a connection to the de.scalable.database
   */
 trait ScalableDB {
-
   private val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig("scalable.postgres")
 
   val db: JdbcProfile#Backend#Database = dbConfig.db
 
-  val songQuery = TableQuery[SongTable]
-
+  val songQuery       = TableQuery[SongTable]
+  val partyQuery      = TableQuery[PartyTable]
+  val partyQueueQuery = TableQuery[PartyQueueTable]
 }
 

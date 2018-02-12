@@ -26,7 +26,7 @@ case class SongToAdd(streamingServiceID: String,
 }
 
 case class SongPlayed(id:Long,
-                      partyKey:String){
+                      partyID:String){
 }
 
 

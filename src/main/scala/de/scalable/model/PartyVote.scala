@@ -1,5 +1,5 @@
 package de.scalable.model
 
-case class PartyVote(partyKey: String,
+case class PartyVote(partyID: String,
                      songID: Long,
                      positive:Boolean)

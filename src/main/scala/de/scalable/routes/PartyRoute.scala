@@ -54,7 +54,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
     pathPrefix("song") {
       post {
         entity(as[SongPlayed]) { songPlayed =>
-          onComplete(setSongPlayed(songPlayed.id,songPlayed.partyKey)) {
+          onComplete(setSongPlayed(songPlayed.id,songPlayed.partyID)) {
             case Success(result) => complete((result.toJson))
             case Failure(e) =>
               e.printStackTrace()

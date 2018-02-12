@@ -48,6 +48,9 @@ object PartyActorLogic {
       case PartyVote(key,songID,false)  => PartyQueueQueries.downvoteSongForParty(songID,key)
     }
   }
+  def setSongPlayed(songID:Long, partyKey:String) = {
+    PartyQueueQueries.setSongPlayed(songID, partyKey)
+  }
 
   private def generateKey(length: Int): String = {
     randomAlphanumeric take length mkString

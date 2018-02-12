@@ -49,8 +49,13 @@ object PartyQueueQueries extends ScalableDB {
     }
   }
 
+  def setSongPlayed(songID: Long, partyID: String):Future[Int] = {
+    val q = for { e <- partyQueueQuery if (e.songID === songID &&  e.partyID === partyID)} yield e.played
+    db.run(q.update(true))
+  }
+
   //Incrementing not supported by slick https://github.com/slick/slick/issues/497
-  def upvoteSongForParty(songID:Long, partyID:String):Future[Any] = {
+  def upvoteSongForParty(songID:Long, partyID:String):Future[Int] = {
     db.run(sqlu"UPDATE scalable.party_queue SET upvotes = upvotes + 1 WHERE party_id = $partyID AND song_id = $songID;")
   }
 

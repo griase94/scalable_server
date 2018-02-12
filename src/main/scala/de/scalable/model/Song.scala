@@ -25,6 +25,10 @@ case class SongToAdd(streamingServiceID: String,
     Song(0L, streamingServiceID, name, artist, album, albumCoverUrl)
 }
 
+case class SongPlayed(id:Long,
+                      partyKey:String){
+}
+
 
 case class SongReturn(id:Long,
                 streamingServiceID: String,

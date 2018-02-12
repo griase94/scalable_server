@@ -52,6 +52,17 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
       }
     }~
     pathPrefix("song") {
+      post {
+        entity(as[SongPlayed]) { songPlayed =>
+          onComplete(setSongPlayed(songPlayed.id,songPlayed.partyKey)) {
+            case Success(result) => complete((result.toJson))
+            case Failure(e) =>
+              e.printStackTrace()
+              complete((InternalServerError, e.toString))
+
+          }
+        }
+      }~
       path(Remaining) { partyKey =>
         put {
           entity(as[SongToAdd]) { songToAdd =>
@@ -126,6 +137,11 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
       pipe(
         PartyActorLogic.voteForSong(vote)
       ) to sender()
+
+    case SetSongPlayed(songID, partyKey) =>
+      pipe(
+        PartyActorLogic.setSongPlayed(songID, partyKey)
+      ) to sender()
   }
 }
 
@@ -139,6 +155,7 @@ object PartyMessages {
   case class CreateParty(name:String)
   case class GetSongsForParty(partyKey: String)
   case class VoteForSong(vote: PartyVote)
+  case class SetSongPlayed(songID: Long, partyKey: String)
 }
 
 trait PartyApi {
@@ -168,6 +185,10 @@ trait PartyApi {
 
   def voteForSong (vote: PartyVote): Future[Int] ={
     (partyActor ? VoteForSong(vote)).mapTo[Int]
+  }
+
+  def setSongPlayed(songID:Long, partyKey:String): Future[Int] ={
+    (partyActor ? SetSongPlayed(songID,partyKey)).mapTo[Int]
   }
 }
 

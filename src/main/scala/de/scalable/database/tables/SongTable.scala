@@ -19,11 +19,9 @@ class SongTable(tag: Tag)
   def album: Rep[String] = column[String]("album", NotNull)
   def albumCoverUrl: Rep[String] = column[String]("album_cover_url")
 
-  def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
-
   // scalastyle:off method.name
   def * : ProvenShape[Song] =
-    (id, streamingServiceID, name, artist, album, albumCoverUrl, createdAt) <>
+    (id, streamingServiceID, name, artist, album, albumCoverUrl) <>
       (Song.tupled, Song.unapply)
 
   // scalastyle:on method.name

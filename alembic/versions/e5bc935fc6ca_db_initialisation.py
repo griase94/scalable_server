@@ -18,9 +18,9 @@ from sqlalchemy.dialects.postgresql import (BOOLEAN, BIGINT, INTEGER, VARCHAR, T
 
 def upgrade():
     op.create_table('party',
-                    Column('id', BIGINT, primary_key=True),
-                    Column('key', VARCHAR, nullable=False),
+                    Column('id', VARCHAR, primary_key=True),
                     Column('name', VARCHAR, nullable=False),
+                    Column('password', VARCHAR, nullable=False),
                     Column('created_at', TIMESTAMP, nullable=False),
                     schema='scalable')
     op.create_table('song',
@@ -30,14 +30,13 @@ def upgrade():
                     Column('artist', VARCHAR, nullable=False),
                     Column('album', VARCHAR, nullable=True),
                     Column('album_cover_url', VARCHAR, nullable=True),
-                    Column('created_at', TIMESTAMP, nullable=False),
                     schema='scalable')
     op.create_table('party_queue',
                         Column('id', BIGINT, primary_key=True),
-                        Column('party_id', BIGINT, nullable=False),
+                        Column('party_id', VARCHAR, nullable=False),
                         Column('song_id', BIGINT, nullable=False),
                         Column('upvotes', INTEGER, nullable=False, default=0),
-                        Column('downvotes', INTEGER, nullable=True, default=0),
+                        Column('downvotes', INTEGER, nullable=False, default=0),
                         Column('played', BOOLEAN, nullable=False, default=False),
                         schema='scalable')
 

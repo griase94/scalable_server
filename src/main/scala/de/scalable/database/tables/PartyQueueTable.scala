@@ -12,16 +12,16 @@ import slick.sql.SqlProfile.ColumnOption.NotNull
 class PartyQueueTable(tag: Tag)
   extends BaseTableLong[PartyQueueEntry](tag, "party_queue") {
 
-  def partyID: Rep[Long] = column[Long]("party_id", NotNull)
+  def partyID: Rep[String] = column[String]("party_id", NotNull)
   def songID: Rep[Long] = column[Long]("song_id", NotNull)
   def upvotes: Rep[Int] = column[Int]("upvotes", NotNull, O.Default(0))
   def downvotes: Rep[Int] = column[Int]("downvotes",NotNull, O.Default(0))
+  def played: Rep[Boolean] = column[Boolean]("played",NotNull, O.Default(false))
 
-  def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   // scalastyle:off method.name
   def * : ProvenShape[PartyQueueEntry] =
-    (id, partyID, songID, upvotes, downvotes, createdAt) <>
+    (id, partyID, songID, upvotes, downvotes, played) <>
       (PartyQueueEntry.tupled, PartyQueueEntry.unapply)
 
   // scalastyle:on method.name

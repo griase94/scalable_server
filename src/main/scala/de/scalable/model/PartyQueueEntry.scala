@@ -3,9 +3,8 @@ package de.scalable.model
 import java.time.LocalDateTime
 
 case class PartyQueueEntry(id: Long,
-                           partyID: Long,
+                           partyKey: String,
                            songID: Long,
                            upvotes:Int,
                            downvotes:Int,
-                           played:Boolean,
-                           createdAt: LocalDateTime)
+                           played:Boolean)

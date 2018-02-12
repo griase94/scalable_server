@@ -11,6 +11,11 @@ import de.scalable.database.ScalablePostgresProfile.api._
   * @param name of the table in the database
   */
 abstract class BaseTableLong[T](tag: Tag, name: String)
-  extends Table[T](tag, Some("mailer"), name) {
+  extends Table[T](tag, Some("scalable"), name) {
   def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
+}
+
+abstract class BaseTableString[T](tag: Tag, name: String)
+  extends Table[T](tag, Some("scalable"), name) {
+  def id: Rep[String] = column[String]("id", O.PrimaryKey)
 }

@@ -10,7 +10,7 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.config.{Config, ConfigFactory}
 import de.scalable.json.ModelJsonSupport
-import de.scalable.model.Song
+import de.scalable.model._
 import org.slf4j.{Logger, LoggerFactory}
 import spray.json._
 
@@ -39,12 +39,47 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
       }
     } ~
   pathPrefix("party") {
+    pathEndOrSingleSlash {
+      put {
+        entity(as[String]) { partyName =>
+          onComplete(createParty(partyName)) {
+            case Success(result) => complete(result.toJson)
+            case Failure(e) =>
+              e.printStackTrace()
+              complete((InternalServerError, e.toString))
+          }
+        }
+      }
+    }~
     pathPrefix("song") {
       path(Remaining) { partyKey =>
         put {
-          entity(as[Song]) { songToAdd =>
+          entity(as[SongToAdd]) { songToAdd =>
             onComplete(addSong(songToAdd, partyKey)) {
-              case Success(echoReturn) => complete((echoReturn))
+              case Success(result) => complete(result.toJson)
+              case Failure(e) =>
+                e.printStackTrace()
+                complete((InternalServerError, e.toString))
+            }
+          }
+        } ~
+        get {
+          onComplete(getSongsForParty(partyKey)) {
+            case Success(echoReturn) => complete((echoReturn))
+            case Failure(e) =>
+              e.printStackTrace()
+              complete((InternalServerError, e.toString))
+
+          }
+        }
+      }
+    }~
+    pathPrefix("vote") {
+      pathEndOrSingleSlash{
+        post {
+          entity(as[PartyVote]) { vote =>
+            onComplete(voteForSong(vote)) {
+              case Success(result) => complete(result.toJson)
               case Failure(e) =>
                 e.printStackTrace()
                 complete((InternalServerError, e.toString))
@@ -72,9 +107,24 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
         PartyActorLogic.echo(echo)
       ) to sender()
 
-    case AddSong(song,partyKey) =>
+    case AddSong(songToAdd,partyID) =>
       pipe(
-        PartyActorLogic.addSong(song,partyKey)
+        PartyActorLogic.addSong(songToAdd,partyID)
+      ) to sender()
+
+    case CreateParty(name) =>
+      pipe(
+        PartyActorLogic.createParty(name)
+      ) to sender()
+
+    case GetSongsForParty(partyKey) =>
+      pipe(
+        PartyActorLogic.getSongsForParty(partyKey)
+      ) to sender()
+
+    case VoteForSong(vote) =>
+      pipe(
+        PartyActorLogic.voteForSong(vote)
       ) to sender()
   }
 }
@@ -85,8 +135,10 @@ object PartyMessages {
   def name: String = "scalable_party" //TODO rename
 
   case class Echo(echo: String)
-  case class AddSong(song: Song,partyKey)
-
+  case class AddSong(song: SongToAdd, partyKey: String)
+  case class CreateParty(name:String)
+  case class GetSongsForParty(partyKey: String)
+  case class VoteForSong(vote: PartyVote)
 }
 
 trait PartyApi {
@@ -104,7 +156,18 @@ trait PartyApi {
   def echo(echo: String): Future[String] =
     (partyActor ? Echo(echo)).mapTo[String]
 
-  def addSong(song: Song, partyKey:String): Future[Seq[Song]] =
-    (partyActor ? AddSong(song,partyKey)).mapTo[Seq[Song]]
+  def addSong(song: SongToAdd, partyKey:String): Future[SongReturn] =
+    (partyActor ? AddSong(song,partyKey)).mapTo[SongReturn]
+
+  def createParty(name:String): Future[Party] ={
+    (partyActor ? CreateParty(name)).mapTo[Party]
+  }
+
+  def getSongsForParty(partyKey: String): Future[Seq[SongReturn]] =
+    (partyActor ? GetSongsForParty(partyKey)).mapTo[Seq[SongReturn]]
+
+  def voteForSong (vote: PartyVote): Future[Int] ={
+    (partyActor ? VoteForSong(vote)).mapTo[Int]
+  }
 }
 

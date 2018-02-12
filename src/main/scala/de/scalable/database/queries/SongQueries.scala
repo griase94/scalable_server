@@ -8,8 +8,13 @@ import de.scalable.database.ScalablePostgresProfile.api._
 import de.scalable.model._
 import org.slf4j.{Logger, LoggerFactory}
 
-import scala.concurrent.Future
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
+import java.time.LocalDateTime
+
+import de.scalable.database.queries.PartyQueueQueries.insertQueueEntryQuery
 
 object SongQueries extends ScalableDB {
 
@@ -20,7 +25,15 @@ object SongQueries extends ScalableDB {
       into ((insertedSong,id) => insertedSong.copy(id =  id).toReturn(0,0,false)) += song)
   }
 
-  def insertSong(song: Song): Future[SongReturn] = {
-    db.run(insertSongQuery(song))
+  def insertSong(songToAdd: SongToAdd, partyID: String): Future[SongReturn] = {
+    val now = LocalDateTime.now()
+    val query = for {
+      insertedSong <- insertSongQuery(songToAdd.toSong())
+      queueEntry <- insertQueueEntryQuery(PartyQueueEntry(0L,partyID,insertedSong.id,0,0,false))
+    } yield insertedSong
+
+    db.run(query)
   }
+
+
 }

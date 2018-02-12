@@ -2,7 +2,7 @@ package de.scalable.model
 
 import java.time.LocalDateTime
 
-case class Party(id: Long,
-                  key: String,
-                  name: String,
-                  createdAt: LocalDateTime)
+case class Party(id: String,
+                 name: String,
+                 password:String,
+                 createdAt: LocalDateTime)

@@ -15,7 +15,7 @@ class ScalableApi(system: ActorSystem, timeout: Timeout) extends RestRoutes {
 
   implicit def executionContext: ExecutionContextExecutor = system.dispatcher
 
-  override def createScalableActor(): ActorRef =
-    system.actorOf(ScalableMessages.props, ScalableMessages.name)
+  override def createPartyActor(): ActorRef =
+    system.actorOf(PartyMessages.props, PartyMessages.name)
 
 }

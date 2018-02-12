@@ -9,7 +9,7 @@ import akka.http.scaladsl.Http.ServerBinding
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
-import de.scalable.routes.ScalableApi
+import de.scalable.routes.{PartyApi, ScalableApi}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

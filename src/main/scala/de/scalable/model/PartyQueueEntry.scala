@@ -4,7 +4,8 @@ import java.time.LocalDateTime
 
 case class PartyQueueEntry(id: Long,
                            partyID: Long,
-                           SongID: Long,
+                           songID: Long,
                            upvotes:Int,
                            downvotes:Int,
+                           played:Boolean,
                            createdAt: LocalDateTime)

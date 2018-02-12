@@ -15,14 +15,12 @@ object SongQueries extends ScalableDB {
 
   val log: Logger = LoggerFactory.getLogger("SongQueries")
 
-  private def insertSongQuery(song: Song) =
-    (songQuery returning songQuery) += song
-
-  def insertSong(song: Song): Future[Song] = {
-    db.run(insertSongQuery(song))
+  private def insertSongQuery(song: Song) ={
+    (songQuery returning songQuery.map(_.id)
+      into ((insertedSong,id) => insertedSong.copy(id =  id).toReturn(0,0,false)) += song)
   }
 
-  def getSongsForParty(key:String): Unit ={
-
+  def insertSong(song: Song): Future[SongReturn] = {
+    db.run(insertSongQuery(song))
   }
 }

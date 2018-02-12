@@ -14,7 +14,7 @@ depends_on = None
 
 from alembic import op
 from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import (BIGINT, INTEGER, VARCHAR, TIMESTAMP)
+from sqlalchemy.dialects.postgresql import (BOOLEAN, BIGINT, INTEGER, VARCHAR, TIMESTAMP)
 
 def upgrade():
     op.create_table('party',
@@ -38,6 +38,7 @@ def upgrade():
                         Column('song_id', BIGINT, nullable=False),
                         Column('upvotes', INTEGER, nullable=False, default=0),
                         Column('downvotes', INTEGER, nullable=True, default=0),
+                        Column('played', BOOLEAN, nullable=False, default=False),
                         schema='scalable')
 
     op.create_foreign_key('party_queue_party_id_fk', 'party_queue', 'party',

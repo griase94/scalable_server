@@ -11,7 +11,7 @@ trait RestRoutes extends PartyRoute {
 
   def routes: Route =
     healthCheck ~
-      mailRoute //~
+      partyRoute //~
 
   def healthCheck: Route =
     pathPrefix("health") {

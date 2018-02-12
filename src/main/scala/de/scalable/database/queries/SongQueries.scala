@@ -9,11 +9,16 @@ import de.scalable.model._
 import org.slf4j.{Logger, LoggerFactory}
 
 
-object ScalableQueries extends ScalableDB {
+object SongQueries extends ScalableDB {
 
-  val log: Logger = LoggerFactory.getLogger("MailQueries")
+  val log: Logger = LoggerFactory.getLogger("SongQueries")
 
   private def insertSongQuery(song: Song) =
     (songQuery returning songQuery) += song
 
+  private def getSongsFor()
+
+  def insertSong(song: Song) = {
+
+  }
 }

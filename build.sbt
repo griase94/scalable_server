@@ -10,7 +10,6 @@ lazy val commonSettings = Seq(
 mainClass := Some("de.scalable.Main")
 
 libraryDependencies ++= {
-
   // Dependencies
   val akkaVersion     = "2.4.20"
   val akkaHttpVersion = "10.0.11"
@@ -20,9 +19,6 @@ libraryDependencies ++= {
 
   val postgresVersion       = "42.1.4"
   val logbackVersion        = "1.2.3"
-  val awsVersion            = "1.11.250"
-  val uuidGeneratorVersion  = "3.1.4"
-  val sendGridVersion       = "2.2.2"
 
   Seq(
     "com.typesafe.akka"   %% "akka-actor"           % akkaVersion,
@@ -37,10 +33,7 @@ libraryDependencies ++= {
     "io.igl"              %% "jwt"                  % jwtVersion,
 
     "org.postgresql"        % "postgresql"            % postgresVersion,
-    "ch.qos.logback"        % "logback-classic"       % logbackVersion,
-    "com.amazonaws"         % "aws-java-sdk-s3"       % awsVersion,
-    "com.fasterxml.uuid"    % "java-uuid-generator"   % uuidGeneratorVersion,
-    "com.sendgrid"          % "sendgrid-java"         % sendGridVersion,
+    "ch.qos.logback"        % "logback-classic"       % logbackVersion
   )
 }
 

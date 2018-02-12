@@ -10,7 +10,7 @@ import slick.lifted.{ForeignKeyQuery, ProvenShape}
 import slick.sql.SqlProfile.ColumnOption.NotNull
 
 class PartyQueueTable(tag: Tag)
-  extends BaseTableLong[PartyQueue](tag, "party_queue") {
+  extends BaseTableLong[PartyQueueEntry](tag, "party_queue") {
 
   def partyID: Rep[Long] = column[Long]("party_id", NotNull)
   def songID: Rep[Long] = column[Long]("song_id", NotNull)
@@ -20,9 +20,9 @@ class PartyQueueTable(tag: Tag)
   def createdAt: Rep[LocalDateTime] = column[LocalDateTime]("created_at", NotNull)
 
   // scalastyle:off method.name
-  def * : ProvenShape[PartyQueue] =
+  def * : ProvenShape[PartyQueueEntry] =
     (id, partyID, songID, upvotes, downvotes, createdAt) <>
-      (PartyQueue.tupled, PartyQueue.unapply)
+      (PartyQueueEntry.tupled, PartyQueueEntry.unapply)
 
   // scalastyle:on method.name
   def partyQueuePartyIDFk: ForeignKeyQuery[PartyTable, Party] = foreignKey(

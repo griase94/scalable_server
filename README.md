@@ -51,7 +51,7 @@ Response: liste aus SongReturn(id:Long,
                 played: Boolean)
                 
 ## vote song  for party
-Methode: Post
+Methode: POST
 
 URL: localhost:5000/party/vote
 
@@ -65,7 +65,7 @@ Response: 1 wenn geklappt, ansonsten 0 (wenn kein Song für die Daten existiert)
 Wichtig: header "Content-Type" muss den Wert "application/json" haben
                 
 ## Song auf played setzen
-Methode: Post
+Methode: POST
 
 URL: localhost:5000/party/song/
 

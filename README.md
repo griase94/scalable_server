@@ -14,9 +14,9 @@ Response: JSON mit (id: String,
 ## add song to party
 Methode: PUT
 
-URL: localhost:5000/party/PARTY_ID
+URL: localhost:5000/party/song/PARTY_ID
 
-Body: Party(streamingServiceID: String,
+Body: Song(streamingServiceID: String,
                      name: String,
                      artist: String,
                      album: String,
@@ -37,7 +37,7 @@ Wichtig: header "Content-Type" muss den Wert "application/json" haben
 ## get songs for party
 Methode: GET
 
-URL: localhost:5000/party/PARTY_ID
+URL: localhost:5000/party/song/PARTY_ID
 
                      
 Response: liste aus SongReturn(id:Long,

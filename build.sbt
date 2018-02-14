@@ -31,9 +31,11 @@ libraryDependencies ++= {
     "com.github.tminglei" %% "slick-pg"             % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_spray-json"  % slickPgVersion,
     "io.igl"              %% "jwt"                  % jwtVersion,
+    "ch.megard"           %% "akka-http-cors"       % "0.2.2",
 
-    "org.postgresql"        % "postgresql"            % postgresVersion,
-    "ch.qos.logback"        % "logback-classic"       % logbackVersion
+  "org.postgresql"        % "postgresql"            % postgresVersion,
+  "ch.qos.logback"        % "logback-classic"       % logbackVersion
+
   )
 }
 

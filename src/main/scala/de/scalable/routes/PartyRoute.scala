@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait PartyRoute extends PartyApi with ModelJsonSupport {
+trait PartyRoute extends PartyApi with ModelJsonSupport with CorsSupport {
 
   val log: Logger = LoggerFactory.getLogger("PartyRoute")
 
@@ -28,6 +28,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
     pathPrefix("echo") {
       path(Remaining) { stringToEcho =>
         get {
+          corsHandler(
           onComplete(echo(stringToEcho)) {
             case Success(echoReturn) => complete((echoReturn))
             case Failure(e) =>
@@ -35,12 +36,14 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               complete((InternalServerError, e.toString))
 
           }
+          )
         }
       }
     } ~
   pathPrefix("party") {
     pathEndOrSingleSlash {
       put {
+        corsHandler(
         entity(as[String]) { partyName =>
           onComplete(createParty(partyName)) {
             case Success(result) => complete(result.toJson)
@@ -49,10 +52,12 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               complete((InternalServerError, e.toString))
           }
         }
+        )
       }
     }~
     pathPrefix("song") {
       post {
+        corsHandler(
         entity(as[SongPlayed]) { songPlayed =>
           onComplete(setSongPlayed(songPlayed.id,songPlayed.partyID)) {
             case Success(result) => complete((result.toJson))
@@ -62,9 +67,11 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
 
           }
         }
+        )
       }~
       path(Remaining) { partyKey =>
         put {
+          corsHandler(
           entity(as[SongToAdd]) { songToAdd =>
             onComplete(addSong(songToAdd, partyKey)) {
               case Success(result) => complete(result.toJson)
@@ -73,8 +80,10 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                 complete((InternalServerError, e.toString))
             }
           }
+          )
         } ~
         get {
+          corsHandler(
           onComplete(getSongsForParty(partyKey)) {
             case Success(result) => complete(result)
             case Failure(e) =>
@@ -82,12 +91,14 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               complete((InternalServerError, e.toString))
 
           }
+          )
         }
       }
     } ~
     pathPrefix("photo") {
         path(Remaining) { partyKey =>
           put {
+            corsHandler(
             entity(as[PhotoToAdd]) { photoToAdd =>
               onComplete(addPhoto(photoToAdd, partyKey)) {
                 case Success(result) => complete(result.toJson)
@@ -96,8 +107,10 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                   complete((InternalServerError, e.toString))
               }
             }
+            )
           }
           get {
+            corsHandler(
             onComplete(getPhotosForParty(partyKey)) {
               case Success(result) => complete(result)
               case Failure(e) =>
@@ -105,12 +118,14 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                 complete((InternalServerError, e.toString))
 
             }
+            )
           }
         }
     }
   } ~ pathPrefix("vote") {
       pathEndOrSingleSlash{
         post {
+          corsHandler(
           entity(as[Vote]) { vote =>
             vote.voteType match{
               case VoteTypes.PHOTO => onComplete(voteForPhoto(vote)) {
@@ -129,6 +144,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
             }
 
           }
+          )
         }
       }
     }

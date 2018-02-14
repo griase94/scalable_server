@@ -23,6 +23,7 @@ def upgrade():
                     Column('password', VARCHAR, nullable=False),
                     Column('created_at', TIMESTAMP, nullable=False),
                     schema='scalable')
+
     op.create_table('song',
                     Column('id', BIGINT, primary_key=True),
                     Column('streaming_service_id', VARCHAR, nullable=False),
@@ -77,3 +78,4 @@ def downgrade():
     op.drop_table('party_queue', schema='scalable')
     op.drop_table('party', schema='scalable')
     op.drop_table('song', schema='scalable')
+    op.drop_table('photo', schema='scalable')

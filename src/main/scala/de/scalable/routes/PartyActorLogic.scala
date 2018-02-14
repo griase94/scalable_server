@@ -5,7 +5,7 @@ package de.scalable.routes
 
 import java.time.LocalDateTime
 
-import de.scalable.database.queries.{PartyQueries, PartyQueueQueries, SongQueries}
+import de.scalable.database.queries.{PartyQueries, PhotoFeedQueries, SongQueries}
 import de.scalable.model.{Party, PartyVote, Song, SongToAdd}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -38,17 +38,17 @@ object PartyActorLogic {
   }
 
   def getSongsForParty(partyID:String) = {
-    PartyQueueQueries.getSongsForParty(partyID)
+    PhotoFeedQueries.getSongsForParty(partyID)
   }
 
   def voteForSong(vote:PartyVote) = {
     vote match {
-      case PartyVote(key,songID,true)   => PartyQueueQueries.upvoteSongForParty(songID,key)
-      case PartyVote(key,songID,false)  => PartyQueueQueries.downvoteSongForParty(songID,key)
+      case PartyVote(key,songID,true)   => PhotoFeedQueries.upvoteSongForParty(songID,key)
+      case PartyVote(key,songID,false)  => PhotoFeedQueries.downvoteSongForParty(songID,key)
     }
   }
   def setSongPlayed(songID:Long, partyKey:String) = {
-    PartyQueueQueries.setSongPlayed(songID, partyKey)
+    PhotoFeedQueries.setSongPlayed(songID, partyKey)
   }
 
   private def generateKey(length: Int): String = {

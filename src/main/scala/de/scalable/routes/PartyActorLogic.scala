@@ -15,7 +15,6 @@ import scala.util.Random
 object PartyActorLogic {
 
   val partyPasswords = Seq("lion", "giraffe", "wolf", "caterpillar", "elephant", "snake", "tiger")
-  val randomAlphanumeric = Random.alphanumeric
   val randomNumber = new Random
 
   private val log: Logger = LoggerFactory.getLogger("ScalableActorLogic")
@@ -53,6 +52,7 @@ object PartyActorLogic {
   }
 
   private def generateKey(length: Int): String = {
+    val randomAlphanumeric = Random.alphanumeric
     randomAlphanumeric take length mkString
   }
 

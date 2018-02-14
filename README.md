@@ -16,7 +16,7 @@ Methode: PUT
 
 URL: localhost:5000/party/song/PARTY_ID
 
-Body: Song(streamingServiceID: String,
+Body: SongToAdd(streamingServiceID: String,
                      name: String,
                      artist: String,
                      album: String,
@@ -50,14 +50,40 @@ Response: liste aus SongReturn(id:Long,
                 downvotes: Int,
                 played: Boolean)
                 
-## vote song  for party
+## add photos to party
+Methode: PUT
+
+URL: localhost:5000/party/photo/PARTY_ID
+
+Body: PhotoToAdd(url:String)
+                     
+Response: PhotoReturn(id:Long,
+                       url:String,
+                       upvotes: Int,
+                       downvotes: Int)
+                
+Wichtig: header "Content-Type" muss den Wert "application/json" haben
+
+## get photos for party
+Methode: GET
+
+URL: localhost:5000/party/photo/PARTY_ID
+
+                     
+Response: liste aus PhotoReturn(id:Long,
+                       url:String,
+                       upvotes: Int,
+                       downvotes: Int)
+                
+## vote song/photo for party
 Methode: POST
 
-URL: localhost:5000/party/vote
+URL: localhost:5000/vote
 
 Body: PartyVote(partyID: String,
                      songID: Long,
-                     positive:Boolean) //positive = true wenn upvote, false wenn downvote
+                     positive:Boolean  //positive = true wenn upvote, false wenn downvote
+                     votType: String) //entweder SONG oder PHOTO
 
                      
 Response: 1 wenn geklappt, ansonsten 0 (wenn kein Song für die Daten existiert) oder ein Fehler

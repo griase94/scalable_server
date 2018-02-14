@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDateTime
 
-import de.scalable.database.queries.PhotoFeedQueries.insertQueueEntryQuery
+import de.scalable.database.queries.PartyQueueQueries.insertQueueEntryQuery
 
 object SongQueries extends ScalableDB {
 

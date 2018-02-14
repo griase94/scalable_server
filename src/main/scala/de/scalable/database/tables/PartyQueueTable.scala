@@ -10,12 +10,10 @@ import slick.lifted.{ForeignKeyQuery, ProvenShape}
 import slick.sql.SqlProfile.ColumnOption.NotNull
 
 class PartyQueueTable(tag: Tag)
-  extends BaseTableLong[PartyQueueEntry](tag, "party_queue") {
+  extends BaseTableLong[PartyQueueEntry](tag, "party_queue") with VotableTable[PartyQueueEntry] {
 
   def partyID: Rep[String] = column[String]("party_id", NotNull)
   def songID: Rep[Long] = column[Long]("song_id", NotNull)
-  def upvotes: Rep[Int] = column[Int]("upvotes", NotNull, O.Default(0))
-  def downvotes: Rep[Int] = column[Int]("downvotes",NotNull, O.Default(0))
   def played: Rep[Boolean] = column[Boolean]("played",NotNull, O.Default(false))
 
 

@@ -44,7 +44,7 @@ object PartyQueueQueries extends ScalableDB {
       }
       case Failure(exception) => {
         exception.printStackTrace()
-        Future.failed(new Exception(s"Get entries for party failed ${exception.getMessage}"))
+        Future.failed(new Exception(s"Get party queue entries for party failed ${exception.getMessage}"))
       }
     }
   }

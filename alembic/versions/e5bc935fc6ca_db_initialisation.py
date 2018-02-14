@@ -31,6 +31,12 @@ def upgrade():
                     Column('album', VARCHAR, nullable=True),
                     Column('album_cover_url', VARCHAR, nullable=True),
                     schema='scalable')
+
+    op.create_table('photo',
+                    Column('id', BIGINT, primary_key=True),
+                    Column('url', VARCHAR, nullable=False),
+                    schema='scalable')
+
     op.create_table('party_queue',
                         Column('id', BIGINT, primary_key=True),
                         Column('party_id', VARCHAR, nullable=False),
@@ -40,6 +46,19 @@ def upgrade():
                         Column('played', BOOLEAN, nullable=False, default=False),
                         schema='scalable')
 
+    op.create_table('photo_feed',
+                        Column('id', BIGINT, primary_key=True),
+                        Column('party_id', VARCHAR, nullable=False),
+                        Column('photo_id', BIGINT, nullable=False),
+                        Column('upvotes', INTEGER, nullable=False, default=0),
+                        Column('downvotes', INTEGER, nullable=False, default=0),
+                        schema='scalable')
+
+
+    op.create_foreign_key('photo_feed_party_id_fk', 'photo_feed', 'party',
+                          ['party_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
+    op.create_foreign_key('photo_feed_photo_id_fk', 'photo_feed', 'photo',
+                          ['photo_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
     op.create_foreign_key('party_queue_party_id_fk', 'party_queue', 'party',
                           ['party_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
     op.create_foreign_key('party_queue_song_id_fk', 'party_queue', 'song',
@@ -52,6 +71,9 @@ def downgrade():
     op.drop_index('party_queue_unique_constraint', 'party_queue', schema='scalable')
     op.drop_constraint('party_queue_song_id_fk', 'party_queue', None, schema='scalable')
     op.drop_constraint('party_queue_party_id_fk', 'party_queue', None, schema='scalable')
+    op.drop_constraint('photo_feed_party_id_fk', 'photo_feed', None, schema='scalable')
+    op.drop_constraint('photo_feed_photo_id_fk', 'photo_feed', None, schema='scalable')
+    op.drop_table('photo_feed', schema='scalable')
     op.drop_table('party_queue', schema='scalable')
     op.drop_table('party', schema='scalable')
     op.drop_table('song', schema='scalable')

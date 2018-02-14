@@ -4,7 +4,7 @@ package de.scalable.routes
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Directives.{pathPrefix, _}
 import akka.http.scaladsl.server.Route
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -76,7 +76,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
         } ~
         get {
           onComplete(getSongsForParty(partyKey)) {
-            case Success(echoReturn) => complete((echoReturn))
+            case Success(result) => complete(result)
             case Failure(e) =>
               e.printStackTrace()
               complete((InternalServerError, e.toString))
@@ -84,22 +84,45 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
           }
         }
       }
-    }~
-    pathPrefix("vote") {
+    } ~
+    pathPrefix("photo") {
+        path(Remaining) { partyKey =>
+          put {
+            entity(as[PhotoToAdd]) { photoToAdd =>
+              onComplete(addPhoto(photoToAdd, partyKey)) {
+                case Success(result) => complete(result.toJson)
+                case Failure(e) =>
+                  e.printStackTrace()
+                  complete((InternalServerError, e.toString))
+              }
+            }
+          }
+        }
+    }
+  } ~ pathPrefix("vote") {
       pathEndOrSingleSlash{
         post {
-          entity(as[PartyVote]) { vote =>
-            onComplete(voteForSong(vote)) {
-              case Success(result) => complete(result.toJson)
-              case Failure(e) =>
-                e.printStackTrace()
-                complete((InternalServerError, e.toString))
+          entity(as[Vote]) { vote =>
+            vote.voteType match{
+              case VoteTypes.PHOTO => onComplete(voteForPhoto(vote)) {
+                case Success(result) => complete(result.toJson)
+                case Failure(e) =>
+                  e.printStackTrace()
+                  complete((InternalServerError, e.toString))
+              }
+              case VoteTypes.SONG => onComplete(voteForSong(vote)) {
+                case Success(result) => complete(result.toJson)
+                case Failure(e) =>
+                  e.printStackTrace()
+                  complete((InternalServerError, e.toString))
+              }
+              case _ => complete((BadRequest, "Desired vote type does not exist!"))
             }
+
           }
         }
       }
     }
-  }
 
 }
 
@@ -123,6 +146,11 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
         PartyActorLogic.addSong(songToAdd,partyID)
       ) to sender()
 
+    case AddPhoto(photoToAdd,partyID) =>
+      pipe(
+        PartyActorLogic.addPhoto(photoToAdd,partyID)
+      ) to sender()
+
     case CreateParty(name) =>
       pipe(
         PartyActorLogic.createParty(name)
@@ -136,6 +164,11 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
     case VoteForSong(vote) =>
       pipe(
         PartyActorLogic.voteForSong(vote)
+      ) to sender()
+
+    case VoteForPhoto(vote) =>
+      pipe(
+        PartyActorLogic.voteForPhoto(vote)
       ) to sender()
 
     case SetSongPlayed(songID, partyKey) =>
@@ -152,9 +185,11 @@ object PartyMessages {
 
   case class Echo(echo: String)
   case class AddSong(song: SongToAdd, partyKey: String)
+  case class AddPhoto(song: PhotoToAdd, partyKey: String)
   case class CreateParty(name:String)
   case class GetSongsForParty(partyKey: String)
-  case class VoteForSong(vote: PartyVote)
+  case class VoteForSong(vote: Vote)
+  case class VoteForPhoto(vote: Vote)
   case class SetSongPlayed(songID: Long, partyKey: String)
 }
 
@@ -176,6 +211,9 @@ trait PartyApi {
   def addSong(song: SongToAdd, partyKey:String): Future[SongReturn] =
     (partyActor ? AddSong(song,partyKey)).mapTo[SongReturn]
 
+  def addPhoto(photo: PhotoToAdd, partyKey:String): Future[PhotoReturn] =
+    (partyActor ? AddPhoto(photo,partyKey)).mapTo[PhotoReturn]
+
   def createParty(name:String): Future[Party] ={
     (partyActor ? CreateParty(name)).mapTo[Party]
   }
@@ -183,7 +221,10 @@ trait PartyApi {
   def getSongsForParty(partyKey: String): Future[Seq[SongReturn]] =
     (partyActor ? GetSongsForParty(partyKey)).mapTo[Seq[SongReturn]]
 
-  def voteForSong (vote: PartyVote): Future[Int] ={
+  def voteForSong (vote: Vote): Future[Int] ={
+    (partyActor ? VoteForSong(vote)).mapTo[Int]
+  }
+  def voteForPhoto (vote: Vote): Future[Int] ={
     (partyActor ? VoteForSong(vote)).mapTo[Int]
   }
 

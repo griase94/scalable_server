@@ -36,7 +36,9 @@ trait ScalableDB {
   val db: JdbcProfile#Backend#Database = dbConfig.db
 
   val songQuery       = TableQuery[SongTable]
+  val photoQuery      = TableQuery[PhotoTable]
   val partyQuery      = TableQuery[PartyTable]
   val partyQueueQuery = TableQuery[PartyQueueTable]
+  val photoFeedQuery  = TableQuery[PhotoFeedTable]
 }
 

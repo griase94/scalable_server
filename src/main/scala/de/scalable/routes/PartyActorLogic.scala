@@ -5,14 +5,15 @@ package de.scalable.routes
 
 import java.time.LocalDateTime
 
-import de.scalable.database.queries.{PartyQueries, PhotoFeedQueries, SongQueries}
-import de.scalable.model.{Party, PartyVote, Song, SongToAdd}
+import de.scalable.database.queries._
+import de.scalable.model._
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.Future
 import scala.util.Random
 
 object PartyActorLogic {
+
 
   val partyPasswords = Seq("lion", "giraffe", "wolf", "caterpillar", "elephant", "snake", "tiger")
   val randomNumber = new Random
@@ -27,6 +28,10 @@ object PartyActorLogic {
     SongQueries.insertSong(song,partyKey)
   }
 
+  def addPhoto(photo: PhotoToAdd, partyKey:String) = {
+    PhotoQueries.insertPhoto(photo,partyKey)
+  }
+
   def createParty(name:String) ={
     val now = LocalDateTime.now()
     val key = generateKey(6).toUpperCase
@@ -38,17 +43,23 @@ object PartyActorLogic {
   }
 
   def getSongsForParty(partyID:String) = {
-    PhotoFeedQueries.getSongsForParty(partyID)
+    PartyQueueQueries.getSongsForParty(partyID)
   }
 
-  def voteForSong(vote:PartyVote) = {
+  def voteForSong(vote:Vote) = {
     vote match {
-      case PartyVote(key,songID,true)   => PhotoFeedQueries.upvoteSongForParty(songID,key)
-      case PartyVote(key,songID,false)  => PhotoFeedQueries.downvoteSongForParty(songID,key)
+      case Vote(key,songID,true,_)   => PartyQueueQueries.upvoteSongForParty(songID,key)
+      case Vote(key,songID,false,_)  => PartyQueueQueries.downvoteSongForParty(songID,key)
+    }
+  }
+  def voteForPhoto(vote:Vote) = {
+    vote match {
+      case Vote(key,songID,true,_)   => PhotoFeedQueries.upvotePhotoForParty(songID,key)
+      case Vote(key,songID,false,_)  => PhotoFeedQueries.upvotePhotoForParty(songID,key)
     }
   }
   def setSongPlayed(songID:Long, partyKey:String) = {
-    PhotoFeedQueries.setSongPlayed(songID, partyKey)
+    PartyQueueQueries.setSongPlayed(songID, partyKey)
   }
 
   private def generateKey(length: Int): String = {

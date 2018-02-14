@@ -33,8 +33,6 @@ object PartyQueueQueries extends ScalableDB {
     db.run(getEntriesForPartyQuery(partyID).asTry) flatMap {
       case Success((entries, songs)) => {
         val entryMap = entries.map(e => (e.songID, e)).toMap
-
-        //TODO geht das so!?
         val result = songs.filter(x => entryMap.keySet.contains(x.id)).map(s =>{
           val e = entryMap.get(s.id).get
           s.toReturn(e.upvotes,e.downvotes,e.played)

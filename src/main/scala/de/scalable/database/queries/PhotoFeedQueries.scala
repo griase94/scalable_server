@@ -29,8 +29,6 @@ object PhotoFeedQueries extends ScalableDB {
     db.run(getEntriesForPartyQuery(partyID).asTry) flatMap {
       case Success((entries, photos)) => {
         val entryMap = entries.map(e => (e.photoID, e)).toMap
-
-        //TODO geht das so!?
         val result = photos.filter(x => entryMap.keySet.contains(x.id)).map(s => {
           val e = entryMap.get(s.id).get
           s.toReturn(e.upvotes, e.downvotes)

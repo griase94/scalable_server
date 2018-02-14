@@ -46,6 +46,10 @@ object PartyActorLogic {
     PartyQueueQueries.getSongsForParty(partyID)
   }
 
+  def getPhotosForParty(partyID:String) = {
+    PhotoFeedQueries.getPhotosForParty(partyID)
+  }
+
   def voteForSong(vote:Vote) = {
     vote match {
       case Vote(key,songID,true,_)   => PartyQueueQueries.upvoteSongForParty(songID,key)

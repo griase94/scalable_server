@@ -97,6 +97,15 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               }
             }
           }
+          get {
+            onComplete(getPhotosForParty(partyKey)) {
+              case Success(result) => complete(result)
+              case Failure(e) =>
+                e.printStackTrace()
+                complete((InternalServerError, e.toString))
+
+            }
+          }
         }
     }
   } ~ pathPrefix("vote") {
@@ -161,6 +170,11 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
         PartyActorLogic.getSongsForParty(partyKey)
       ) to sender()
 
+    case GetPhotosForParty(partyKey) =>
+      pipe(
+        PartyActorLogic.getPhotosForParty(partyKey)
+      ) to sender()
+
     case VoteForSong(vote) =>
       pipe(
         PartyActorLogic.voteForSong(vote)
@@ -188,6 +202,7 @@ object PartyMessages {
   case class AddPhoto(song: PhotoToAdd, partyKey: String)
   case class CreateParty(name:String)
   case class GetSongsForParty(partyKey: String)
+  case class GetPhotosForParty(partyKey: String)
   case class VoteForSong(vote: Vote)
   case class VoteForPhoto(vote: Vote)
   case class SetSongPlayed(songID: Long, partyKey: String)
@@ -220,6 +235,9 @@ trait PartyApi {
 
   def getSongsForParty(partyKey: String): Future[Seq[SongReturn]] =
     (partyActor ? GetSongsForParty(partyKey)).mapTo[Seq[SongReturn]]
+
+  def getPhotosForParty(partyKey: String): Future[Seq[PhotoReturn]] =
+    (partyActor ? GetPhotosForParty(partyKey)).mapTo[Seq[PhotoReturn]]
 
   def voteForSong (vote: Vote): Future[Int] ={
     (partyActor ? VoteForSong(vote)).mapTo[Int]

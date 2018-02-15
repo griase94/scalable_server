@@ -96,7 +96,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                   complete((InternalServerError, e.toString))
               }
             }
-          }
+          } ~
           get {
             onComplete(getPhotosForParty(partyKey)) {
               case Success(result) => complete(result)

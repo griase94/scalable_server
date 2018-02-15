@@ -12,11 +12,16 @@ class PhotoFeedTable(tag: Tag)
 
   def partyID: Rep[String] = column[String]("party_id", NotNull)
   def photoID: Rep[Long] = column[Long]("photo_id", NotNull)
-  def url: Rep[String] = column[String]("url", NotNull)
 
 
   // scalastyle:off method.name
   def * : ProvenShape[PhotoFeedEntry] =
     (id,partyID, photoID , upvotes, downvotes) <>
       (PhotoFeedEntry.tupled, PhotoFeedEntry.unapply)
+
+  // scalastyle:on method.name
+  def partyQueuePartyIDFk: ForeignKeyQuery[PartyTable, Party] = foreignKey(
+    "photo_feed_party_id_fk", partyID, TableQuery[PartyTable])(_.id)
+  def partyQueueSongIDFk: ForeignKeyQuery[PhotoTable, Photo] = foreignKey(
+    "photo_feed_photo_id_fk", photoID, TableQuery[PhotoTable])(_.id)
 }

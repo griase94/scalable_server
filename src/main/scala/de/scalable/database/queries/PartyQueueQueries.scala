@@ -25,7 +25,7 @@ object PartyQueueQueries extends ScalableDB {
   def getEntriesForPartyQuery(partyID: String) = {
     for {
       entries <- partyQueueQuery.filter(_.partyID === partyID).result
-      songs <- songQuery.filter(_.id inSet entries.map(_.id)).result
+      songs <- songQuery.filter(_.id inSet entries.map(_.songID)).result
     } yield (entries, songs)
   }
 

@@ -21,7 +21,7 @@ object PhotoFeedQueries extends ScalableDB {
   def getEntriesForPartyQuery(partyID: String) = {
     for {
       entries <- photoFeedQuery.filter(_.partyID === partyID).result
-      photos <- photoQuery.filter(_.id inSet entries.map(_.id)).result
+      photos <- photoQuery.filter(_.id inSet entries.map(_.photoID)).result
     } yield (entries, photos)
   }
 

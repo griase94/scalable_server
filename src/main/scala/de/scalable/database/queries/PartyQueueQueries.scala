@@ -21,7 +21,6 @@ object PartyQueueQueries extends ScalableDB {
     partyQueueQuery.filter(x => x.id === songID && x.partyID === partyID).delete
   }
 
-
   def getEntriesForPartyQuery(partyID: String) = {
     for {
       entries <- partyQueueQuery.filter(_.partyID === partyID).result

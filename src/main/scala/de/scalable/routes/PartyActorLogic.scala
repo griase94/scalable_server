@@ -41,6 +41,9 @@ object PartyActorLogic {
 
     PartyQueries.insertParty(party)
   }
+  def checkIfPartyExists(name:String) ={
+    PartyQueries.checkIfPartyExists(name)
+  }
 
   def getSongsForParty(partyID:String) = {
     PartyQueueQueries.getSongsForParty(partyID)

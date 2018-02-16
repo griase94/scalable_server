@@ -39,6 +39,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
       }
     } ~
   pathPrefix("party") {
+
     pathEndOrSingleSlash {
       put {
         entity(as[String]) { partyName =>
@@ -48,6 +49,17 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               e.printStackTrace()
               complete((InternalServerError, e.toString))
           }
+        }
+      }
+    }~
+      path(Remaining) { partyKey =>
+      get {
+        onComplete(checkIfPartyExists(partyKey)) {
+          case Success(result) => complete(result.toJson)
+          case Failure(e) =>
+            e.printStackTrace()
+            complete((InternalServerError, e.toString))
+
         }
       }
     }~
@@ -174,6 +186,10 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
       pipe(
         PartyActorLogic.createParty(name)
       ) to sender()
+    case CheckIfPartyExists(name) =>
+      pipe(
+        PartyActorLogic.checkIfPartyExists(name)
+      ) to sender()
 
     case GetSongsForParty(partyKey) =>
       pipe(
@@ -217,6 +233,7 @@ object PartyMessages {
   case class DeleteSong(songID:Long, partyKey: String)
   case class AddPhoto(song: PhotoToAdd, partyKey: String)
   case class CreateParty(name:String)
+  case class CheckIfPartyExists(name:String)
   case class GetSongsForParty(partyKey: String)
   case class GetPhotosForParty(partyKey: String)
   case class VoteForSong(vote: Vote)
@@ -247,6 +264,9 @@ trait PartyApi {
 
   def createParty(name:String): Future[Party] ={
     (partyActor ? CreateParty(name)).mapTo[Party]
+  }
+  def checkIfPartyExists(name:String): Future[Boolean] ={
+    (partyActor ? CheckIfPartyExists(name)).mapTo[Boolean]
   }
 
   def getSongsForParty(partyKey: String): Future[Seq[SongReturn]] =

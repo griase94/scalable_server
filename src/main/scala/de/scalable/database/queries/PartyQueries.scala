@@ -24,5 +24,11 @@ object PartyQueries extends ScalableDB {
     db.run(insertPartyQuery(party))
   }
 
+  def checkIfPartyExists(id: String): Future[Boolean] ={
+    db.run(partyQuery.filter(_.id === id).result.headOption).map(_ match {
+      case Some(party)=> true
+      case None => false
+    })
+  }
 
 }

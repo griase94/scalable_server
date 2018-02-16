@@ -39,7 +39,6 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
       }
     } ~
   pathPrefix("party") {
-
     pathEndOrSingleSlash {
       put {
         entity(as[String]) { partyName =>
@@ -49,17 +48,6 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               e.printStackTrace()
               complete((InternalServerError, e.toString))
           }
-        }
-      }
-    }~
-      path(Remaining) { partyKey =>
-      get {
-        onComplete(checkIfPartyExists(partyKey)) {
-          case Success(result) => complete(result.toJson)
-          case Failure(e) =>
-            e.printStackTrace()
-            complete((InternalServerError, e.toString))
-
         }
       }
     }~
@@ -130,7 +118,17 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
             }
           }
         }
-    }
+    } ~
+      path(Remaining) { partyKey =>
+        get {
+          onComplete(checkIfPartyExists(partyKey)) {
+            case Success(result) => complete(result.toJson)
+            case Failure(e) =>
+              e.printStackTrace()
+              complete((InternalServerError, e.toString))
+          }
+        }
+      }
   } ~ pathPrefix("vote") {
       pathEndOrSingleSlash{
         post {

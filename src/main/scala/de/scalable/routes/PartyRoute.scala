@@ -118,7 +118,20 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
             }
           }
         }
-    } ~
+    }~ pathPrefix("login") {
+      pathEndOrSingleSlash{
+        post {
+          entity(as[PartyLoginRequest]) { request =>
+            onComplete(loginToParty(request.id,request.password)) {
+              case Success(result) => complete(result.toJson)
+              case Failure(e) =>
+                e.printStackTrace()
+                complete((InternalServerError, e.toString))
+            }
+          }
+        }
+      }
+    }~
       path(Remaining) { partyKey =>
         get {
           onComplete(checkIfPartyExists(partyKey)) {
@@ -148,20 +161,6 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
               }
               case _ => complete((BadRequest, "Desired vote type does not exist!"))
             }
-
-          }
-        }
-      }
-    }~ pathPrefix("login") {
-      pathEndOrSingleSlash{
-        post {
-          entity(as[PartyLoginRequest]) { request =>
-            onComplete(loginToParty(request.id,request.password)) {
-                case Success(result) => complete(result.toJson)
-                case Failure(e) =>
-                  e.printStackTrace()
-                  complete((InternalServerError, e.toString))
-              }
           }
         }
       }

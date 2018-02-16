@@ -44,7 +44,7 @@ def upgrade():
                         Column('song_id', BIGINT, nullable=False),
                         Column('upvotes', INTEGER, nullable=False, default=0),
                         Column('downvotes', INTEGER, nullable=False, default=0),
-                        Column('party_queue', VARCHAR, nullable=False, default='QUEUE'),
+                        Column('play_state', VARCHAR, nullable=False, default='QUEUE'),
                         schema='scalable')
 
     op.create_table('photo_feed',

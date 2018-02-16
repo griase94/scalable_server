@@ -1,15 +1,12 @@
 package de.scalable.database.queries
 
 
-
-import de.scalable.model.{PartyQueueEntry, Song, SongReturn}
+import de.scalable.model.{PartyQueueEntry, PlayStates, SongReturn}
 import org.slf4j.{Logger, LoggerFactory}
 import de.scalable.database.ScalableDB
 import de.scalable.database.ScalablePostgresProfile.api._
 
-
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scala.util.{Failure, Success}
 import scala.concurrent.Future
 
@@ -38,7 +35,7 @@ object PartyQueueQueries extends ScalableDB {
         val entryMap = entries.map(e => (e.songID, e)).toMap
         val result = songs.filter(x => entryMap.keySet.contains(x.id)).map(s =>{
           val e = entryMap.get(s.id).get
-          s.toReturn(e.upvotes,e.downvotes,e.played)
+          s.toReturn(e.upvotes,e.downvotes,e.playState)
         }).sortWith(_.voteDiff() > _.voteDiff())
         println(result.map(_.voteDiff()))
         Future.successful(result)
@@ -50,9 +47,19 @@ object PartyQueueQueries extends ScalableDB {
     }
   }
 
-  def setSongPlayed(songID: Long, partyID: String):Future[Int] = {
-    val q = for { e <- partyQueueQuery if (e.songID === songID &&  e.partyID === partyID)} yield e.played
-    db.run(q.update(true))
+  def updateSongPlayState(songID: Long, partyID: String, playState: String):Future[Int] = {
+    val q = for { e <- partyQueueQuery if (e.songID === songID &&  e.partyID === partyID)} yield e.playState
+    playState match {
+      case PlayStates.QUEUE | PlayStates.PLAYED => db.run(q.update(playState))
+      case PlayStates.PLAYING =>{
+        val setAllPlayingToPlayedQuery = for { e <- partyQueueQuery if (e.playState === PlayStates.PLAYING)} yield e.playState
+        db.run(DBIO.seq(
+          setAllPlayingToPlayedQuery.update(PlayStates.PLAYED),
+          q.update(playState)
+        ).transactionally).map(_ => 1)
+      }
+      case _ => Future.failed(new IllegalArgumentException(s"Illegal playstate : ${playState}"))
+    }
   }
 
   def deleteSongFromQueueAndSongs(songID: Long, partyID: String):Future[Unit] = {

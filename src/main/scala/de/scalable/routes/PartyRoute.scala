@@ -53,9 +53,9 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
     }~
     pathPrefix("song") {
       post {
-        entity(as[SongPlayedOrDelete]) { songPlayed =>
-          onComplete(setSongPlayed(songPlayed.id,songPlayed.partyID)) {
-            case Success(result) => complete((result.toJson))
+        entity(as[SongPlayStateUpdate]) { songPlayStateUpdate =>
+          onComplete(updateSongPlayState(songPlayStateUpdate.id,songPlayStateUpdate.partyID,songPlayStateUpdate.playState)) {
+            case Success(result) => complete(s"Song ${songPlayStateUpdate.id} for party ${songPlayStateUpdate.partyID} was set to ${songPlayStateUpdate.playState}")
             case Failure(e) =>
               e.printStackTrace()
               complete((InternalServerError, e.toString))
@@ -64,7 +64,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
         }
       }~
         delete {
-          entity(as[SongPlayedOrDelete]) { songToDelete =>
+          entity(as[SongToDelete]) { songToDelete =>
             onComplete(deleteSong(songToDelete.id,songToDelete.partyID)) {
               case Success(result) => complete(s"Song ${songToDelete.id} for party ${songToDelete.partyID} deleted")
               case Failure(e) =>
@@ -143,7 +143,6 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
         }
       }
     }
-
 }
 
 class PartyActor(implicit timeout: Timeout) extends Actor {
@@ -196,9 +195,9 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
         PartyActorLogic.voteForPhoto(vote)
       ) to sender()
 
-    case SetSongPlayed(songID, partyKey) =>
+    case SetSongPlayed(songID, partyKey,playState) =>
       pipe(
-        PartyActorLogic.setSongPlayed(songID, partyKey)
+        PartyActorLogic.setSongPlayed(songID, partyKey,playState)
       ) to sender()
 
     case DeleteSong(songID, partyKey) =>
@@ -222,7 +221,7 @@ object PartyMessages {
   case class GetPhotosForParty(partyKey: String)
   case class VoteForSong(vote: Vote)
   case class VoteForPhoto(vote: Vote)
-  case class SetSongPlayed(songID: Long, partyKey: String)
+  case class SetSongPlayed(songID: Long, partyKey: String, playState: String)
 }
 
 trait PartyApi {
@@ -263,8 +262,8 @@ trait PartyApi {
     (partyActor ? VoteForSong(vote)).mapTo[Int]
   }
 
-  def setSongPlayed(songID:Long, partyKey:String): Future[Int] ={
-    (partyActor ? SetSongPlayed(songID,partyKey)).mapTo[Int]
+  def updateSongPlayState(songID:Long, partyKey:String, playState: String): Future[Int] ={
+    (partyActor ? SetSongPlayed(songID,partyKey,playState)).mapTo[Int]
   }
 
   def deleteSong(songID:Long, partyKey:String): Future[Unit] ={

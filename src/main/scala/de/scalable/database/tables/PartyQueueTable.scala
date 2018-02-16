@@ -14,12 +14,12 @@ class PartyQueueTable(tag: Tag)
 
   def partyID: Rep[String] = column[String]("party_id", NotNull)
   def songID: Rep[Long] = column[Long]("song_id", NotNull)
-  def played: Rep[Boolean] = column[Boolean]("played",NotNull, O.Default(false))
+  def playState: Rep[String] = column[String]("play_state",NotNull, O.Default(PlayStates.QUEUE))
 
 
   // scalastyle:off method.name
   def * : ProvenShape[PartyQueueEntry] =
-    (id, partyID, songID, upvotes, downvotes, played) <>
+    (id, partyID, songID, upvotes, downvotes, playState) <>
       (PartyQueueEntry.tupled, PartyQueueEntry.unapply)
 
   // scalastyle:on method.name

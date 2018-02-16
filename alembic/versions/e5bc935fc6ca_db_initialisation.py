@@ -44,7 +44,7 @@ def upgrade():
                         Column('song_id', BIGINT, nullable=False),
                         Column('upvotes', INTEGER, nullable=False, default=0),
                         Column('downvotes', INTEGER, nullable=False, default=0),
-                        Column('played', BOOLEAN, nullable=False, default=False),
+                        Column('party_queue', VARCHAR, nullable=False, default='QUEUE'),
                         schema='scalable')
 
     op.create_table('photo_feed',
@@ -54,7 +54,6 @@ def upgrade():
                         Column('upvotes', INTEGER, nullable=False, default=0),
                         Column('downvotes', INTEGER, nullable=False, default=0),
                         schema='scalable')
-
 
     op.create_foreign_key('photo_feed_party_id_fk', 'photo_feed', 'party',
                           ['party_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
@@ -66,7 +65,6 @@ def upgrade():
                           ['song_id'], ['id'], None, None, None, None, None, 'scalable', 'scalable')
     op.create_index('party_queue_unique_constraint', 'party_queue',
                     ['party_id', 'song_id'], schema='scalable', unique=True)
-
 
 def downgrade():
     op.drop_index('party_queue_unique_constraint', 'party_queue', schema='scalable')

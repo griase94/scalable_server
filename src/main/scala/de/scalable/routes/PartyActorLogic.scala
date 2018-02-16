@@ -62,8 +62,8 @@ object PartyActorLogic {
       case Vote(key,songID,false,_)  => PhotoFeedQueries.upvotePhotoForParty(songID,key)
     }
   }
-  def setSongPlayed(songID:Long, partyKey:String) = {
-    PartyQueueQueries.setSongPlayed(songID, partyKey)
+  def setSongPlayed(songID:Long, partyKey:String, playState:String) = {
+    PartyQueueQueries.updateSongPlayState(songID, partyKey, playState)
   }
 
   def deleteSong(songID:Long, partyKey:String) = {

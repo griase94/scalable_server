@@ -5,7 +5,7 @@ case class PartyQueueEntry(id: Long,
                            songID: Long,
                            upvotes:Int,
                            downvotes:Int,
-                           played:Boolean)
+                           playState:String)
 
 case class PhotoFeedEntry(id: Long,
                           partyID: String,

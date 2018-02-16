@@ -10,7 +10,17 @@ Response: JSON mit (id: String,
                  name: String,
                  password:String,
                  createdAt: LocalDateTime)
-                 
+            
+## login to party
+Methode: POST
+
+URL: localhost:5000/party/login/
+
+Body: PartyLoginRequest(id:String,
+                        password:String)
+
+Response: true oder false            
+            
 ## check if party exists
 Methode: GET
 

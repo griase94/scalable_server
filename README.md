@@ -10,6 +10,13 @@ Response: JSON mit (id: String,
                  name: String,
                  password:String,
                  createdAt: LocalDateTime)
+                 
+## check if party exists
+Methode: GET
+
+URL: localhost:5000/party/PARTY_ID
+
+Response: true oder false
 
 ## add song to party
 Methode: PUT

@@ -71,11 +71,11 @@ object PartyQueueQueries extends ScalableDB {
 
   //Incrementing not supported by slick https://github.com/slick/slick/issues/497
   def upvoteSongForParty(songID:Long, partyID:String):Future[Int] = {
-    db.run(sqlu"UPDATE scalable.party_queue SET upvotes = upvotes + 1 WHERE party_id = $partyID AND song_id = $songID AND played <> TRUE;")
+    db.run(sqlu"UPDATE scalable.party_queue SET upvotes = upvotes + 1 WHERE party_id = $partyID AND song_id = $songID AND play_state <> 'PLAYED'AND play_state <> 'PLAYING';")
   }
 
   def downvoteSongForParty(songID:Long, partyID:String):Future[Int] = {
-    db.run(sqlu"UPDATE scalable.party_queue SET downvotes = downvotes + 1 WHERE party_id = $partyID AND song_id = $songID AND played <> TRUE;")
+    db.run(sqlu"UPDATE scalable.party_queue SET downvotes = downvotes + 1 WHERE party_id = $partyID AND song_id = $songID AND play_state <> 'PLAYED'AND play_state <> 'PLAYING';")
   }
 
 }

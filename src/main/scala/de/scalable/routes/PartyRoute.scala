@@ -277,7 +277,7 @@ trait PartyApi {
     (partyActor ? VoteForSong(vote)).mapTo[Int]
   }
   def voteForPhoto (vote: Vote): Future[Int] ={
-    (partyActor ? VoteForSong(vote)).mapTo[Int]
+    (partyActor ? VoteForPhoto(vote)).mapTo[Int]
   }
 
   def updateSongPlayState(songID:Long, partyKey:String, playState: String): Future[Int] ={

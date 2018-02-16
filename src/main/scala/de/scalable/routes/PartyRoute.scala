@@ -152,6 +152,19 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
           }
         }
       }
+    }~ pathPrefix("login") {
+      pathEndOrSingleSlash{
+        post {
+          entity(as[PartyLoginRequest]) { request =>
+            onComplete(loginToParty(request.id,request.password)) {
+                case Success(result) => complete(result.toJson)
+                case Failure(e) =>
+                  e.printStackTrace()
+                  complete((InternalServerError, e.toString))
+              }
+          }
+        }
+      }
     }
 }
 
@@ -184,9 +197,15 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
       pipe(
         PartyActorLogic.createParty(name)
       ) to sender()
+
     case CheckIfPartyExists(name) =>
       pipe(
         PartyActorLogic.checkIfPartyExists(name)
+      ) to sender()
+
+    case LoginToParty(id,pw) =>
+      pipe(
+        PartyActorLogic.loginToParty(id,pw)
       ) to sender()
 
     case GetSongsForParty(partyKey) =>
@@ -232,6 +251,7 @@ object PartyMessages {
   case class AddPhoto(song: PhotoToAdd, partyKey: String)
   case class CreateParty(name:String)
   case class CheckIfPartyExists(name:String)
+  case class LoginToParty(id: String, pw: String)
   case class GetSongsForParty(partyKey: String)
   case class GetPhotosForParty(partyKey: String)
   case class VoteForSong(vote: Vote)
@@ -265,6 +285,9 @@ trait PartyApi {
   }
   def checkIfPartyExists(name:String): Future[Boolean] ={
     (partyActor ? CheckIfPartyExists(name)).mapTo[Boolean]
+  }
+  def loginToParty(id:String, password:String): Future[Boolean] ={
+    (partyActor ? LoginToParty(id, password)).mapTo[Boolean]
   }
 
   def getSongsForParty(partyKey: String): Future[Seq[SongReturn]] =

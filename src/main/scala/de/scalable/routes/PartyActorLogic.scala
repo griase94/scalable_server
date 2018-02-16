@@ -45,6 +45,10 @@ object PartyActorLogic {
     PartyQueries.checkIfPartyExists(name)
   }
 
+  def loginToParty(id:String,pw:String) ={
+    PartyQueries.login(id,pw)
+  }
+
   def getSongsForParty(partyID:String) = {
     PartyQueueQueries.getSongsForParty(partyID)
   }

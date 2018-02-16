@@ -31,4 +31,11 @@ object PartyQueries extends ScalableDB {
     })
   }
 
+  def login(id: String, pw:String): Future[Boolean] = {
+    db.run(partyQuery.filter(x=> x.id === id && x.password ===pw).result.headOption).map(_ match {
+      case Some(party)=> true
+      case None => false
+    })
+  }
+
 }

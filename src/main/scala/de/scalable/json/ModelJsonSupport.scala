@@ -19,7 +19,8 @@ trait ModelJsonSupport extends SprayJsonSupport with AdditionalJsonTypes {
   implicit val photoToCreateFormat: RootJsonFormat[PhotoToAdd] = jsonFormat1(PhotoToAdd)
   implicit val photoReturnFormat: RootJsonFormat[PhotoReturn] = jsonFormat4(PhotoReturn)
   implicit val partyFormat: RootJsonFormat[Party] = jsonFormat4(Party)
-  implicit val PartyQueueEntryFormat: RootJsonFormat[PartyQueueEntry] = jsonFormat6(PartyQueueEntry)
-  implicit val PartyVoteFormat: RootJsonFormat[Vote] = jsonFormat4(Vote)
+  implicit val partyLoginFormat: RootJsonFormat[PartyLoginRequest] = jsonFormat2(PartyLoginRequest)
+  implicit val partyQueueEntryFormat: RootJsonFormat[PartyQueueEntry] = jsonFormat6(PartyQueueEntry)
+  implicit val partyVoteFormat: RootJsonFormat[Vote] = jsonFormat4(Vote)
 
 }

@@ -95,11 +95,22 @@ Methode: POST
 
 URL: localhost:5000/party/song/
 
-Body: SongPlayed(id:Long,
+Body: SongPlayedOrDeleted(id:Long,
                       partyID:String)
                      
 Response: 1 wenn geklappt, ansonsten 0 (wenn kein Song für die Daten existiert) oder ein Fehler
 
 Wichtig: header "Content-Type" muss den Wert "application/json" haben
                 
-                
+ ## Song Löschen
+Methode: DELETE
+
+URL: localhost:5000/party/song/
+
+Body: SongPlayedOrDeleted(id:Long,
+                      partyID:String)
+                     
+Response: Song ${songToDelete.id} for party ${songToDelete.partyID} deleted oder ein Fehler
+
+Wichtig: header "Content-Type" muss den Wert "application/json" haben
+                               

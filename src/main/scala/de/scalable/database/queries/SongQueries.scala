@@ -24,16 +24,20 @@ object SongQueries extends ScalableDB {
     (songQuery returning songQuery.map(_.id)
       into ((insertedSong,id) => insertedSong.copy(id =  id).toReturn(0,0,false)) += song)
   }
+  def deleteSongQuery(songID: Long) ={
+    songQuery.filter(_.id === songID).delete
+  }
 
   def insertSong(songToAdd: SongToAdd, partyID: String): Future[SongReturn] = {
     val now = LocalDateTime.now()
     val query = for {
-      insertedSong <- insertSongQuery(songToAdd.toSong())
-      queueEntry <- insertQueueEntryQuery(PartyQueueEntry(0L,partyID,insertedSong.id,0,0,false))
+    insertedSong <- insertSongQuery(songToAdd.toSong())
+    queueEntry <- insertQueueEntryQuery(PartyQueueEntry(0L,partyID,insertedSong.id,0,0,false))
     } yield insertedSong
 
     db.run(query)
   }
+
 
 
 }

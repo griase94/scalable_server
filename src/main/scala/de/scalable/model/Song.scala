@@ -25,8 +25,8 @@ case class SongToAdd(streamingServiceID: String,
     Song(0L, streamingServiceID, name, artist, album, albumCoverUrl)
 }
 
-case class SongPlayed(id:Long,
-                      partyID:String){
+case class SongPlayedOrDelete(id:Long,
+                              partyID:String){
 }
 
 

@@ -66,6 +66,10 @@ object PartyActorLogic {
     PartyQueueQueries.setSongPlayed(songID, partyKey)
   }
 
+  def deleteSong(songID:Long, partyKey:String) = {
+    PartyQueueQueries.deleteSongFromQueueAndSongs(songID, partyKey)
+  }
+
   private def generateKey(length: Int): String = {
     val randomAlphanumeric = Random.alphanumeric
     randomAlphanumeric take length mkString

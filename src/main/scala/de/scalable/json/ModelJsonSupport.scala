@@ -14,7 +14,7 @@ trait ModelJsonSupport extends SprayJsonSupport with AdditionalJsonTypes {
   implicit val songFormat: RootJsonFormat[Song] = jsonFormat6(Song)
   implicit val songToCreateFormat: RootJsonFormat[SongToAdd] = jsonFormat5(SongToAdd)
   implicit val songReturnFormat: RootJsonFormat[SongReturn] = jsonFormat9(SongReturn)
-  implicit val songPlayedFormat: RootJsonFormat[SongPlayed] = jsonFormat2(SongPlayed)
+  implicit val songPlayedFormat: RootJsonFormat[SongPlayedOrDelete] = jsonFormat2(SongPlayedOrDelete)
   implicit val photoToCreateFormat: RootJsonFormat[PhotoToAdd] = jsonFormat1(PhotoToAdd)
   implicit val photoReturnFormat: RootJsonFormat[PhotoReturn] = jsonFormat4(PhotoReturn)
   implicit val partyFormat: RootJsonFormat[Party] = jsonFormat4(Party)

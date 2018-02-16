@@ -20,6 +20,9 @@ object PartyQueueQueries extends ScalableDB {
   def insertQueueEntryQuery(entry: PartyQueueEntry) =
     (partyQueueQuery returning partyQueueQuery) += entry
 
+  def deleteSongQuery(songID: Long, partyID: String) ={
+    partyQueueQuery.filter(x => x.id === songID && x.partyID === partyID).delete
+  }
 
 
   def getEntriesForPartyQuery(partyID: String) = {
@@ -50,6 +53,14 @@ object PartyQueueQueries extends ScalableDB {
   def setSongPlayed(songID: Long, partyID: String):Future[Int] = {
     val q = for { e <- partyQueueQuery if (e.songID === songID &&  e.partyID === partyID)} yield e.played
     db.run(q.update(true))
+  }
+
+  def deleteSongFromQueueAndSongs(songID: Long, partyID: String):Future[Unit] = {
+    val combinedAction = DBIO.seq(
+      deleteSongQuery(songID,partyID),
+      SongQueries.deleteSongQuery(songID)
+    ).transactionally
+    db.run(combinedAction)
   }
 
   //Incrementing not supported by slick https://github.com/slick/slick/issues/497

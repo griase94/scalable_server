@@ -53,7 +53,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
     }~
     pathPrefix("song") {
       post {
-        entity(as[SongPlayed]) { songPlayed =>
+        entity(as[SongPlayedOrDelete]) { songPlayed =>
           onComplete(setSongPlayed(songPlayed.id,songPlayed.partyID)) {
             case Success(result) => complete((result.toJson))
             case Failure(e) =>
@@ -63,6 +63,17 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
           }
         }
       }~
+        delete {
+          entity(as[SongPlayedOrDelete]) { songToDelete =>
+            onComplete(deleteSong(songToDelete.id,songToDelete.partyID)) {
+              case Success(result) => complete(s"Song ${songToDelete.id} for party ${songToDelete.partyID} deleted")
+              case Failure(e) =>
+                e.printStackTrace()
+                complete((InternalServerError, e.toString))
+
+            }
+          }
+        }~
       path(Remaining) { partyKey =>
         put {
           entity(as[SongToAdd]) { songToAdd =>
@@ -189,6 +200,11 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
       pipe(
         PartyActorLogic.setSongPlayed(songID, partyKey)
       ) to sender()
+
+    case DeleteSong(songID, partyKey) =>
+      pipe(
+        PartyActorLogic.deleteSong(songID, partyKey)
+      ) to sender()
   }
 }
 
@@ -199,6 +215,7 @@ object PartyMessages {
 
   case class Echo(echo: String)
   case class AddSong(song: SongToAdd, partyKey: String)
+  case class DeleteSong(songID:Long, partyKey: String)
   case class AddPhoto(song: PhotoToAdd, partyKey: String)
   case class CreateParty(name:String)
   case class GetSongsForParty(partyKey: String)
@@ -248,6 +265,10 @@ trait PartyApi {
 
   def setSongPlayed(songID:Long, partyKey:String): Future[Int] ={
     (partyActor ? SetSongPlayed(songID,partyKey)).mapTo[Int]
+  }
+
+  def deleteSong(songID:Long, partyKey:String): Future[Unit] ={
+    (partyActor ? DeleteSong(songID,partyKey)).mapTo[Unit]
   }
 }
 

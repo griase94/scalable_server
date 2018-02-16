@@ -90,15 +90,18 @@ Response: 1 wenn geklappt, ansonsten 0 (wenn kein Song für die Daten existiert)
 
 Wichtig: header "Content-Type" muss den Wert "application/json" haben
                 
-## Song auf played setzen
+## Song status updaten
 Methode: POST
 
 URL: localhost:5000/party/song/
 
-Body: SongPlayedOrDeleted(id:Long,
-                      partyID:String)
+Body: SongPlayStateUpdate(id:Long,
+                              partyID:String,
+                              playState:String)
+                              
+PlayStates: val QUEUE = "QUEUE oder val PLAYING = "PLAYING" oder val PLAYED = "PLAYED"
                      
-Response: 1 wenn geklappt, ansonsten 0 (wenn kein Song für die Daten existiert) oder ein Fehler
+Response: Int oder ein Fehler
 
 Wichtig: header "Content-Type" muss den Wert "application/json" haben
                 

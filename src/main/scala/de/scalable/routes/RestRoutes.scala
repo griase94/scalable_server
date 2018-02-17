@@ -1,7 +1,7 @@
 package de.scalable.routes
 
 import akka.http.scaladsl.marshalling.ToResponseMarshallable.apply
-import akka.http.scaladsl.model.HttpMethods.{GET, HEAD, OPTIONS, POST, PUT}
+import akka.http.scaladsl.model.HttpMethods.{GET, HEAD, OPTIONS, POST, PUT, DELETE}
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{HttpOrigin, HttpOriginRange}
 import akka.http.scaladsl.server.Directives._
@@ -23,7 +23,7 @@ trait RestRoutes extends PartyRoute {
     // Your CORS settings
     val corsSettings = CorsSettings.defaultSettings.copy(
       allowedOrigins = HttpOriginRange(HttpOrigin("http://localhost:8080")),
-      allowedMethods = Seq(GET, POST, HEAD, OPTIONS, PUT)
+      allowedMethods = Seq(GET, POST, HEAD, OPTIONS, PUT, DELETE)
 
     )
 

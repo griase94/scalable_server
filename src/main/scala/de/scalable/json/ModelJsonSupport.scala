@@ -11,9 +11,9 @@ import scala.language.implicitConversions
 
 trait ModelJsonSupport extends SprayJsonSupport with AdditionalJsonTypes {
 
-  implicit val songFormat: RootJsonFormat[Song] = jsonFormat6(Song)
-  implicit val songToCreateFormat: RootJsonFormat[SongToAdd] = jsonFormat5(SongToAdd)
-  implicit val songReturnFormat: RootJsonFormat[SongReturn] = jsonFormat9(SongReturn)
+  implicit val songFormat: RootJsonFormat[Song] = jsonFormat7(Song)
+  implicit val songToCreateFormat: RootJsonFormat[SongToAdd] = jsonFormat6(SongToAdd)
+  implicit val songReturnFormat: RootJsonFormat[SongReturn] = jsonFormat10(SongReturn)
   implicit val songToDeleteFormat: RootJsonFormat[SongToDelete] = jsonFormat2(SongToDelete)
   implicit val songPlayStateUpdate: RootJsonFormat[SongPlayStateUpdate] = jsonFormat3(SongPlayStateUpdate)
   implicit val photoToCreateFormat: RootJsonFormat[PhotoToAdd] = jsonFormat1(PhotoToAdd)

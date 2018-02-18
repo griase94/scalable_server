@@ -63,8 +63,8 @@ object PartyQueueQueries extends ScalableDB {
 
   def deleteSongFromQueueAndSongs(songID: Long, partyID: String):Future[Unit] = {
     val combinedAction = DBIO.seq(
-      SongQueries.deleteSongQuery(songID),
-      deleteSongFromQueueQuery(songID,partyID)
+      deleteSongFromQueueQuery(songID,partyID),
+      SongQueries.deleteSongQuery(songID)
     ).transactionally
     db.run(combinedAction)
   }

@@ -137,7 +137,7 @@ Wichtig: header "Content-Type" muss den Wert "application/json" haben
  ## Foto Löschen
 Methode: DELETE
 
-URL: localhost:5000/party/song/
+URL: localhost:5000/party/photo/
 
 Body: PhotoDeleted(id:Long,
                       partyID:String)

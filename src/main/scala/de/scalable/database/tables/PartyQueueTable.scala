@@ -26,5 +26,5 @@ class PartyQueueTable(tag: Tag)
   def partyQueuePartyIDFk: ForeignKeyQuery[PartyTable, Party] = foreignKey(
     "party_queue_party_id_fk", partyID, TableQuery[PartyTable])(_.id)
   def partyQueueSongIDFk: ForeignKeyQuery[SongTable, Song] = foreignKey(
-    "party_queue_party_id_fk", songID, TableQuery[SongTable])(_.id)
+    "party_queue_song_id_fk", songID, TableQuery[SongTable])(_.id)
 }

@@ -24,7 +24,7 @@ class PartyQueueTable(tag: Tag)
 
   // scalastyle:on method.name
   def partyQueuePartyIDFk: ForeignKeyQuery[PartyTable, Party] = foreignKey(
-    "party_queue_party_id_fk", partyID, TableQuery[PartyTable])(_.id)
+    "party_queue_party_id_fk", partyID, TableQuery[PartyTable])(_.id, onDelete=ForeignKeyAction.Cascade)
   def partyQueueSongIDFk: ForeignKeyQuery[SongTable, Song] = foreignKey(
-    "party_queue_song_id_fk", songID, TableQuery[SongTable])(_.id)
+    "party_queue_song_id_fk", songID, TableQuery[SongTable])(_.id, onDelete=ForeignKeyAction.Cascade)
 }

@@ -21,7 +21,7 @@ class PhotoFeedTable(tag: Tag)
 
   // scalastyle:on method.name
   def partyQueuePartyIDFk: ForeignKeyQuery[PartyTable, Party] = foreignKey(
-    "photo_feed_party_id_fk", partyID, TableQuery[PartyTable])(_.id)
+    "photo_feed_party_id_fk", partyID, TableQuery[PartyTable])(_.id, onDelete=ForeignKeyAction.Cascade)
   def partyQueuePhotoIDFk: ForeignKeyQuery[PhotoTable, Photo] = foreignKey(
-    "photo_feed_photo_id_fk", photoID, TableQuery[PhotoTable])(_.id)
+    "photo_feed_photo_id_fk", photoID, TableQuery[PhotoTable])(_.id, onDelete=ForeignKeyAction.Cascade)
 }

@@ -97,6 +97,19 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
       }
     } ~
     pathPrefix("photo") {
+        pathEndOrSingleSlash{
+          delete {
+            entity(as[PhotoToDelete]) { photoToDelete =>
+              onComplete(deletePhoto(photoToDelete.id,photoToDelete.partyID)) {
+                case Success(result) => complete(s"Photo ${photoToDelete.id} for party ${photoToDelete.partyID} deleted")
+                case Failure(e) =>
+                  e.printStackTrace()
+                  complete((InternalServerError, e.toString))
+
+              }
+            }
+          }
+        } ~
         path(Remaining) { partyKey =>
           put {
             entity(as[PhotoToAdd]) { photoToAdd =>
@@ -116,18 +129,7 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                 complete((InternalServerError, e.toString))
 
             }
-          }~
-            delete {
-              entity(as[PhotoToDelete]) { photoToDelete =>
-                onComplete(deletePhoto(photoToDelete.id,photoToDelete.partyID)) {
-                  case Success(result) => complete(s"Photo ${photoToDelete.id} for party ${photoToDelete.partyID} deleted")
-                  case Failure(e) =>
-                    e.printStackTrace()
-                    complete((InternalServerError, e.toString))
-
-                }
-              }
-            }
+          }
         }
     }~ pathPrefix("login") {
       pathEndOrSingleSlash{

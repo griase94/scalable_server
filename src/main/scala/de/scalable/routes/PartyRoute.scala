@@ -116,7 +116,18 @@ trait PartyRoute extends PartyApi with ModelJsonSupport {
                 complete((InternalServerError, e.toString))
 
             }
-          }
+          }~
+            delete {
+              entity(as[PhotoToDelete]) { photoToDelete =>
+                onComplete(deletePhoto(photoToDelete.id,photoToDelete.partyID)) {
+                  case Success(result) => complete(s"Photo ${photoToDelete.id} for party ${photoToDelete.partyID} deleted")
+                  case Failure(e) =>
+                    e.printStackTrace()
+                    complete((InternalServerError, e.toString))
+
+                }
+              }
+            }
         }
     }~ pathPrefix("login") {
       pathEndOrSingleSlash{
@@ -236,6 +247,10 @@ class PartyActor(implicit timeout: Timeout) extends Actor {
       pipe(
         PartyActorLogic.deleteSong(songID, partyKey)
       ) to sender()
+    case DeletePhoto(photoId, partyKey) =>
+      pipe(
+        PartyActorLogic.deletePhoto(photoId, partyKey)
+      ) to sender()
   }
 }
 
@@ -248,6 +263,7 @@ object PartyMessages {
   case class AddSong(song: SongToAdd, partyKey: String)
   case class DeleteSong(songID:Long, partyKey: String)
   case class AddPhoto(song: PhotoToAdd, partyKey: String)
+  case class DeletePhoto(photoId:Long, partyKey: String)
   case class CreateParty(name:String)
   case class CheckIfPartyExists(name:String)
   case class LoginToParty(id: String, pw: String)
@@ -308,6 +324,9 @@ trait PartyApi {
 
   def deleteSong(songID:Long, partyKey:String): Future[Unit] ={
     (partyActor ? DeleteSong(songID,partyKey)).mapTo[Unit]
+  }
+  def deletePhoto(photoID:Long, partyKey:String): Future[Unit] ={
+    (partyActor ? DeletePhoto(photoID,partyKey)).mapTo[Unit]
   }
 }
 

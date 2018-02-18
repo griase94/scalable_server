@@ -30,7 +30,7 @@ case class SongPlayStateUpdate(id:Long,
                               playState:String){
 }
 case class SongToDelete(id:Long,
-                              partyID:String){
+                        partyID:String){
 }
 
 

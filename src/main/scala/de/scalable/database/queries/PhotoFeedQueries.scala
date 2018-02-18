@@ -17,7 +17,7 @@ object PhotoFeedQueries extends ScalableDB {
     (photoFeedQuery returning photoFeedQuery) += entry
 
   def deletePhotoFromFeedQuery(photoID: Long, partyID: String) ={
-    photoFeedQuery.filter(x => x.id === photoID && x.partyID === partyID).delete
+    photoFeedQuery.filter(x => x.photoID === photoID && x.partyID === partyID).delete
   }
 
   def getEntriesForPartyQuery(partyID: String) = {

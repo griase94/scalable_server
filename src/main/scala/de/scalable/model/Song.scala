@@ -10,19 +10,21 @@ case class Song(id: Long,
                 name: String,
                 artist: String,
                 album: String,
-                albumCoverUrl: String){
+                albumCoverUrl: String,
+                streamingServiceType: String){
 
   def toReturn(upvotes:Int, downvotes: Int, playState: String): SongReturn =
-    SongReturn(id, streamingServiceID, name, artist, album, albumCoverUrl, upvotes, downvotes, playState)
+    SongReturn(id, streamingServiceID, name, artist, album, albumCoverUrl, upvotes, downvotes, playState,streamingServiceType)
 }
 
 case class SongToAdd(streamingServiceID: String,
                      name: String,
                      artist: String,
                      album: String,
-                     albumCoverUrl: String){
+                     albumCoverUrl: String,
+                     streamingServiceType: String){
   def toSong(): Song =
-    Song(0L, streamingServiceID, name, artist, album, albumCoverUrl)
+    Song(0L, streamingServiceID, name, artist, album, albumCoverUrl,streamingServiceType)
 }
 
 case class SongPlayStateUpdate(id:Long,
@@ -42,7 +44,8 @@ case class SongReturn(id:Long,
                 albumCoverUrl: String,
                 upvotes: Int,
                 downvotes: Int,
-                playState: String){
+                playState: String,
+                streamingServiceType: String){
 
   def voteDiff(): Int = upvotes - downvotes
 }

@@ -16,7 +16,7 @@ object PhotoFeedQueries extends ScalableDB {
   def insertPhotoFeedQuery(entry: PhotoFeedEntry) =
     (photoFeedQuery returning photoFeedQuery) += entry
 
-  def deletePhotoQuery(photoID: Long, partyID: String) ={
+  def deletePhotoFromFeedQuery(photoID: Long, partyID: String) ={
     photoFeedQuery.filter(x => x.id === photoID && x.partyID === partyID).delete
   }
 
@@ -46,8 +46,8 @@ object PhotoFeedQueries extends ScalableDB {
 
   def deletePhotoFromPhotoFeed(photoID: Long, partyID: String):Future[Unit] = {
     val combinedAction = DBIO.seq(
-      deletePhotoQuery(photoID,partyID),
-      PhotoQueries.deletePhotoQuery(photoID)
+      PhotoQueries.deletePhotoQuery(photoID),
+      deletePhotoFromFeedQuery(photoID,partyID)
     ).transactionally
     db.run(combinedAction)
   }

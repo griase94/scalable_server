@@ -65,7 +65,7 @@ object PartyActorLogic {
   def voteForPhoto(vote:Vote) = {
     vote match {
       case Vote(key,songID,true,_)   => PhotoFeedQueries.upvotePhotoForParty(songID,key)
-      case Vote(key,songID,false,_)  => PhotoFeedQueries.upvotePhotoForParty(songID,key)
+      case Vote(key,songID,false,_)  => PhotoFeedQueries.downvotePhotoForParty(songID,key)
     }
   }
   def setSongPlayed(songID:Long, partyKey:String, playState:String) = {

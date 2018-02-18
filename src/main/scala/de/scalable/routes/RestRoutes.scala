@@ -22,7 +22,7 @@ trait RestRoutes extends PartyRoute {
 
     // Your CORS settings
     val corsSettings = CorsSettings.defaultSettings.copy(
-      allowedOrigins = HttpOriginRange(HttpOrigin("http://localhost:8080")),
+      allowedOrigins = HttpOriginRange.*,
       allowedMethods = Seq(GET, POST, HEAD, OPTIONS, PUT, DELETE)
 
     )

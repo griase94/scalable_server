@@ -22,6 +22,10 @@ object PhotoQueries extends ScalableDB {
       into ((insertedPhoto,id) => insertedPhoto.copy(id =  id).toReturn(0,0)) += photo)
   }
 
+  def deletePhotoQuery(photoID: Long) ={
+    photoQuery.filter(_.id === photoID).delete
+  }
+
   def insertPhoto(photoToAdd: PhotoToAdd, partyID: String): Future[PhotoReturn] = {
     val query = for {
       insertedPhoto <- insertPhotoQuery(photoToAdd.toPhoto())

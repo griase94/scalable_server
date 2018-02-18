@@ -17,3 +17,7 @@ case class PhotoReturn(id:Long,
 
   def voteDiff(): Int = upvotes - downvotes
 }
+
+case class PhotoToDelete(id:Long,
+                        partyID:String){
+}

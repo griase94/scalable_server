@@ -16,7 +16,9 @@ object PhotoFeedQueries extends ScalableDB {
   def insertPhotoFeedQuery(entry: PhotoFeedEntry) =
     (photoFeedQuery returning photoFeedQuery) += entry
 
-
+  def deletePhotoQuery(photoID: Long, partyID: String) ={
+    photoFeedQuery.filter(x => x.id === photoID && x.partyID === partyID).delete
+  }
 
   def getEntriesForPartyQuery(partyID: String) = {
     for {
@@ -40,6 +42,14 @@ object PhotoFeedQueries extends ScalableDB {
         Future.failed(new Exception(s"Get photo feed entries for party failed ${exception.getMessage}"))
       }
     }
+  }
+
+  def deletePhotoFromPhotoFeed(photoID: Long, partyID: String):Future[Unit] = {
+    val combinedAction = DBIO.seq(
+      deletePhotoQuery(photoID,partyID),
+      PhotoQueries.deletePhotoQuery(photoID)
+    ).transactionally
+    db.run(combinedAction)
   }
 
   //Incrementing not supported by slick https://github.com/slick/slick/issues/497

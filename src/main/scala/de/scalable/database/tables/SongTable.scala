@@ -18,7 +18,7 @@ class SongTable(tag: Tag)
   def artist: Rep[String] = column[String]("artist", NotNull)
   def album: Rep[String] = column[String]("album", NotNull)
   def albumCoverUrl: Rep[String] = column[String]("album_cover_url")
-  def streamingServiceType: Rep[String] = column[String]("streaming_service_type")
+  def streamingServiceType: Rep[String] = column[String]("streaming_service_type",O.Default(StreamingServiceTypes.YOUTUBE))
 
   // scalastyle:off method.name
   def * : ProvenShape[Song] =

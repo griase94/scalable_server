@@ -36,7 +36,6 @@ object PartyActorLogic {
     val now = LocalDateTime.now()
     val key = generateKey(6).toUpperCase
     val password = partyPasswords(randomNumber.nextInt(partyPasswords.length))
-    println(key + " - " + password)
     val party = Party(key,name,password,now)
 
     PartyQueries.insertParty(party)

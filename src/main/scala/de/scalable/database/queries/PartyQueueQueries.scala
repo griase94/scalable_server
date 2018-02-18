@@ -36,7 +36,6 @@ object PartyQueueQueries extends ScalableDB {
           val e = entryMap.get(s.id).get
           s.toReturn(e.upvotes,e.downvotes,e.playState)
         }).sortWith(_.voteDiff() > _.voteDiff())
-        println(result.map(_.voteDiff()))
         Future.successful(result)
       }
       case Failure(exception) => {
